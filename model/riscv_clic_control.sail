@@ -14,8 +14,14 @@ val handle_mem_exception : (xlenbits, ExceptionType) -> unit
 scattered function handle_mem_exception
 
 /* masking for reads to xepc */
-function inhv_pc_alignment_mask() -> xlenbits =
-  ~(zero_extend(if (sizeof(xlen) == 32) then 0b11 else 0b111))
+/* function inhv_pc_alignment_mask() -> xlenbits = ~(zero_extend(if (sizeof(xlen) == 32) then 0b11 else 0b111)) */
+function inhv_pc_alignment_mask() -> (xlenbits) = {
+    if (sizeof(xlen) == 32) then {
+        ~(zero_extend(0b11));
+    } else {
+        ~(zero_extend(0b111));
+    }
+}
 
 function isClicInterruptPending() -> (bool) = {
   var effective_pending : bits(1) = 0b0;
