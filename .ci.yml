@@ -1,0 +1,23 @@
+image: debian:12-5.slim
+
+stages:
+  - build
+
+build_sail_riscv_sim:
+  image: debian:12.5-slim
+  stage: build
+  variables:
+    SAIL_VERSION: 0.17.1
+  script:
+   - apt update
+   - apt-get install -qqy git opam libgmp-dev pkg-config zlib1g-dev z3
+   - opam init -y
+   - opam switch create sail_${SAIL_VERSION} ocaml-base-compiler.5.2.0 && eval $(opam env)
+   - opam -y install sail.${SAIL_VERSION}
+   - make ARCH=RV64 c_emulator/riscv_sim_RV64
+   - make ARCH=RV32 c_emulator/riscv_sim_RV32
+   - mkdir -p artifacts/
+   - cp c_emulator/riscv_sim_RV* artifacts/
+  artifacts:
+    paths:
+      - artifacts/
