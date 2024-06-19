@@ -221,7 +221,7 @@ function clause ext_read_CSR(0x345) =
      * then print_platform("mnxti rd ip_code " ^BitStr(top_ip_code) ^ " ip_level " ^ BitStr(top_ip_level) ^ " level_filter " ^ BitStr(level_filter));
      */
 
-    if ((top_ip_priv == Machine) & (unsigned(top_ip_level) > unsigned(level_filter))) then {
+    if (top_ip_attr[SHV] != 0b1 & ((top_ip_priv == Machine) & (unsigned(top_ip_level) > unsigned(level_filter)))) then {
       let tbase : xlenbits = mtvt;
       var table_entry_addr : xlenbits = undefined;
       table_entry_addr = if sizeof(xlen) == 32 then {tbase + 4*unsigned(top_ip_code)} else {tbase + 8*unsigned(top_ip_code)};
@@ -276,7 +276,7 @@ function clause ext_write_CSR(0x345, value) = {
     /* if   get_config_print_platform()
      * then print_platform("mnxti wr ip_code " ^BitStr(top_ip_code) ^ " ip_level " ^ BitStr(top_ip_level) ^ " level_filter " ^ BitStr(level_filter) ^ " value_or_pil " ^ BitStr(value_or_pil) ^ " mpil " ^ BitStr(mpil));
      */
-    if ((top_ip_priv == Machine) & (unsigned(top_ip_level) > unsigned(level_filter)) ) then {
+    if (top_ip_attr[SHV] != 0b1 & ((top_ip_priv == Machine) & (unsigned(top_ip_level) > unsigned(level_filter)))) then {
       if (value[4..0] != 0b00000) then {
         mil = top_ip_level;
 
